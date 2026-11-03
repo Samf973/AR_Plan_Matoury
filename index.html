@@ -82,8 +82,10 @@ main{flex:1;min-height:0;display:flex}
   header{padding:6px 10px;gap:6px}header h1{font-size:15px}header h1 small{font-size:11px}
   header button{padding:4px 7px;font-size:12px}
   main{flex-direction:column}
-  #map{order:1;flex:none;height:52%}
-  #panel{order:2;width:auto!important;max-width:none;flex:1;border-right:none;border-top:1px solid var(--line)}
+  #map{order:1;flex:none;height:45%}
+  /* sur téléphone, tout le panneau défile : étiquettes, liste puis urgences en fin de liste */
+  #panel{order:2;width:auto!important;max-width:none;flex:1;border-right:none;border-top:1px solid var(--line);overflow:auto;-webkit-overflow-scrolling:touch}
+  #liste{flex:none;overflow:visible}
   #split{display:none}
   .urg{grid-template-columns:repeat(2,1fr);font-size:12px}
   #fiche{left:0!important;right:0;top:auto!important;bottom:0;width:auto;max-height:62%;overflow:auto;border-radius:14px 14px 0 0}
@@ -121,6 +123,8 @@ const COL=k=>getComputedStyle(document.documentElement).getPropertyValue('--'+k)
 const KEY='plan-matoury-v1';
 let st={fond:'ign',actives:[],sel:null,tous:false,pw:null,fx:null,fy:null};
 try{Object.assign(st,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+// sur téléphone, la fiche couvre la liste : on ne la rouvre pas au démarrage
+if(matchMedia('(max-width:760px)').matches)st.sel=null;
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
 LIEUX.forEach((l,i)=>l.n=i+1);
 const visible=l=>!st.actives.length||st.actives.includes(l.cat);
